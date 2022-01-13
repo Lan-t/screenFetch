@@ -1897,6 +1897,12 @@ detectshell () {
 		else
 			if [[ "${OSTYPE}" =~ "linux" ]]; then
 				shell_type=$(realpath /proc/$PPID/exe | awk -F'/' '{print $NF}')
+				if [[ "${shell_type}" =~ python[0-9.]* ]]; then
+    				python_shell_type=$(cat /proc/$PPID/cmdline | awk -F '\0' '{print $2}' | awk -F'/' '{print $NF}' )
+					if [ "${python_shell_type}" = "xonsh" ]; then
+						shell_type="${python_shell_type}"
+					fi
+				fi
 			elif [[ "${distro}" =~ "BSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
@@ -1935,6 +1941,8 @@ detectshell () {
 		pwsh)
 			shell_version_data=$( pwsh -c '$PSVersionTable.PSVersion.ToString()' )
 			;;
+		xonsh)
+			shell_version_data=$( xonsh -V | awk -F'/' '{print $2}' )
 	esac
 
 	if [[ -n $shell_version_data ]];then
@@ -3829,7 +3837,7 @@ asciiText () {
 "${c2} :---------------------://           %s"
 "${c2}                                     %s")
 		;;
-		
+
 		"Fedora")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
@@ -3840,11 +3848,11 @@ asciiText () {
 			logowidth="38"
 			fulloutput=(
 "${c1}             .',;::::;,'.		 %s"
-"${c1}         .';:cccccccccccc:;,.        	 %s"  
-"${c1}      .;cccccccccccccccccccccc;.     	 %s"  
-"${c1}    .:cccccccccccccccccccccccccc:.   	 %s"		  
+"${c1}         .';:cccccccccccc:;,.        	 %s"
+"${c1}      .;cccccccccccccccccccccc;.     	 %s"
+"${c1}    .:cccccccccccccccccccccccccc:.   	 %s"
 "${c1}  .;ccccccccccccc;${c2}.:dddl:.${c1};ccccccc;.     %s"
-"${c1} .:ccccccccccccc;${c2}OWMKOOXMWd${c1};ccccccc:.    %s" 
+"${c1} .:ccccccccccccc;${c2}OWMKOOXMWd${c1};ccccccc:.    %s"
 "${c1}.:ccccccccccccc;${c2}KMMc${c1};cc;${c2}xMMc${c1};ccccccc:.   %s"
 "${c1},cccccccccccccc;${c2}MMM.${c1};cc;${c2};WW:${c1};cccccccc,   %s"
 "${c1}:cccccccccccccc;${c2}MMM.${c1};cccccccccccccccc:   %s"
@@ -3860,7 +3868,7 @@ asciiText () {
 "${c1}  '::cccccccccccccc::;,.		 %s"
 "${c1}					 %s")
 		;;
-		
+
 		"Fux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -6029,21 +6037,21 @@ asciiText () {
 			logowidth="45"
 			fulloutput=(""
 "${c1}                                          %s"
-"${c1}                @@@@@@@@@@@@@             %s"        
-"${c1}       @@@@@@@@@             @@@@@@@      %s"    
-"${c1}      @@@@@                     @@@@@     %s"   
-"${c1}      @@                           @@     %s"  
-"${c1}       @@                         @@      %s" 
-"${c1}        @                         @       %s" 
-"${c1}        @@@@@@@@@@@@@@@@@@@@@@@@ @@       %s" 
-"${c1}        .@@@@@@@@@@@@/@@@@@@@@@@@@        %s" 
-"${c1}        @@@@@@@@@@@@///@@@@@@@@@@@@       %s" 
-"${c1}       @@@@@@@@@@@@@((((@@@@@@@@@@@@      %s" 
-"${c1}      @@@@@@@@@@@#(((((((#@@@@@@@@@@@     %s" 
-"${c1}     @@@@@@@@@@@#//////////@@@@@@@@@@&    %s" 
-"${c1}     @@@@@@@@@@////@@@@@////@@@@@@@@@@    %s" 
-"${c1}     @@@@@@@@//////@@@@@/////@@@@@@@@@    %s" 
-"${c1}     @@@@@@@//@@@@@@@@@@@@@@@//@@@@@@@    %s" 
+"${c1}                @@@@@@@@@@@@@             %s"
+"${c1}       @@@@@@@@@             @@@@@@@      %s"
+"${c1}      @@@@@                     @@@@@     %s"
+"${c1}      @@                           @@     %s"
+"${c1}       @@                         @@      %s"
+"${c1}        @                         @       %s"
+"${c1}        @@@@@@@@@@@@@@@@@@@@@@@@ @@       %s"
+"${c1}        .@@@@@@@@@@@@/@@@@@@@@@@@@        %s"
+"${c1}        @@@@@@@@@@@@///@@@@@@@@@@@@       %s"
+"${c1}       @@@@@@@@@@@@@((((@@@@@@@@@@@@      %s"
+"${c1}      @@@@@@@@@@@#(((((((#@@@@@@@@@@@     %s"
+"${c1}     @@@@@@@@@@@#//////////@@@@@@@@@@&    %s"
+"${c1}     @@@@@@@@@@////@@@@@////@@@@@@@@@@    %s"
+"${c1}     @@@@@@@@//////@@@@@/////@@@@@@@@@    %s"
+"${c1}     @@@@@@@//@@@@@@@@@@@@@@@//@@@@@@@    %s"
 "${c1}  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ %s"
 "${c1} @@     .@@@@@@@@@@@@@@@@@@@@@@@@@      @ %s"
 "${c1}  @@@@@@           @@@.           @@@@@@@ %s"

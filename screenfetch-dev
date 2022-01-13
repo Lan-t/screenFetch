@@ -365,7 +365,8 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS",\
+"VzLinux"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
@@ -906,6 +907,9 @@ detectdistro () {
 						if (type -p guix && type -p herd) >/dev/null 2>&1; then
 							distro="Guix System"
 						fi
+						if type -p vzlinux-release >/dev/null 2>&1; then
+							distro="Virtuozzo Linux"
+						fi
 					;;
 				esac
 			fi
@@ -1042,6 +1046,7 @@ detectdistro () {
 					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
 					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
+					grep -q -i 'Virtuozzo Linux' /etc/redhat-release && distro="Virtuozzo Linux"
 					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 						distro="Red Star OS"
 						distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
@@ -1285,6 +1290,7 @@ detectdistro () {
 		void*linux) distro="Void Linux" ;;
 		zorin*) distro="Zorin OS" ;;
 		endeavour*) distro="EndeavourOS" ;;
+		virtuozzo*) distro="Virtuozzo Linux"
 	esac
 	if grep -q -i 'Microsoft' /proc/version 2>/dev/null || \
 		grep -q -i 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
@@ -1404,7 +1410,7 @@ detectpkgs () {
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
 		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
-		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
+		'Red Star OS'|'blackPanther OS'|'Amazon Linux'|'Virtuozzo Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
 			pkgs=$(xbps-query -l | wc -l) ;;
@@ -6051,6 +6057,34 @@ asciiText () {
 "${c1}       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@      %s"
 "${c1}           @@@@@@@@@@@@@@@@@@@@@          %s"
 "                                               %s")
+		;;
+		"Virtuozzo Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'dark gray')
+				c2=$(getColor 'red')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="30"
+			fulloutput=(""
+"${c1}             ${c2}zzzzzzzzz${c1}             %s"
+"${c1} vvv                ${c2}zz${c1}        vvv  %s"
+"${c1}  vvv             ${c2}zz${c1}         vvv   %s"
+"${c1}   vvv          ${c2}zz${c1}          vvv    %s"
+"${c1}    vvv       ${c2}zz${c1}           vvv     %s"
+"${c1}     vvv    ${c2}zz${c1}            vvv      %s"
+"${c1}      vvv   ${c2}zzzzzzzzz${c1}    vvv       %s"
+"${c1}       vvv              vvv        %s"
+"${c1}        vvv            vvv         %s"
+"${c1}         vvv          vvv          %s"
+"${c1}          vvv        vvv           %s"
+"${c1}           vvv      vvv            %s"
+"${c1}            vvv    vvv             %s"
+"${c1}             vvv  vvv              %s"
+"${c1}              vvvvvv               %s"
+"${c1}               vvvv                %s"
+"${c1}                vv                 %s"
+"")
 		;;
 
 

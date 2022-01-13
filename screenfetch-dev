@@ -1949,6 +1949,7 @@ detectshell () {
 			;;
 		xonsh)
 			shell_version_data=$( xonsh -V | awk -F'/' '{print $2}' )
+			;;
 	esac
 
 	if [[ -n $shell_version_data ]];then
